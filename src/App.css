@@ -1,0 +1,660 @@
+/* ===================================================================
+ * Notion-inspired minimal theme
+ * =================================================================== */
+
+:root {
+  /* color tokens */
+  --bg: #ffffff;
+  --bg-soft: #f7f7f5;
+  --bg-hover: #f1f1ef;
+  --bg-active: #ebebe9;
+  --border: #ebebea;
+  --border-strong: #d9d9d6;
+  --text: #37352f;
+  --text-soft: #6b6a64;
+  --text-muted: #9b9a93;
+  --accent: #2f2f2c;
+  --accent-soft: #e8e8e4;
+  --danger: #b3261e;
+  --danger-soft: #fdecea;
+  --warn: #b9540a;
+  --warn-soft: #fbeed4;
+  --success: #277148;
+  --success-soft: #dff1e3;
+
+  /* status accents — kept very subtle */
+  --st-not_started: #9b9a93;
+  --st-in_progress: #2f6fd8;
+  --st-done: #277148;
+  --st-other: #8a6dc0;
+
+  /* priority accents */
+  --pri-0: #6b6a64;
+  --pri-1: #b9540a;
+  --pri-2: #b3261e;
+
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-lg: 10px;
+  --shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.06);
+  --shadow-md: 0 4px 12px rgba(15, 15, 15, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 15, 15, 0.12);
+
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue",
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+}
+
+button {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease;
+}
+button:hover {
+  background: var(--bg-hover);
+}
+button:active {
+  background: var(--bg-active);
+}
+button:focus-visible {
+  outline: 2px solid #c8c7c2;
+  outline-offset: 1px;
+}
+
+input[type="text"],
+input[type="search"],
+input[type="date"],
+input:not([type]),
+select,
+textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 6px 10px;
+  outline: none;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #8a8a85;
+  box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 64px;
+}
+
+/* ===================================================================
+ * Layout
+ * =================================================================== */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+}
+
+.body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px 32px 80px;
+}
+
+/* ===================================================================
+ * Header
+ * =================================================================== */
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.app-title {
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  margin-right: 8px;
+}
+
+.search {
+  flex: 1;
+  max-width: 360px;
+  background: var(--bg-soft);
+  border: 1px solid transparent;
+}
+.search:focus {
+  background: var(--bg);
+  border-color: var(--border-strong);
+}
+
+.view-toggle {
+  display: inline-flex;
+  background: var(--bg-soft);
+  border-radius: var(--radius);
+  padding: 2px;
+  gap: 2px;
+}
+.view-toggle button {
+  border: none;
+  padding: 4px 12px;
+  font-size: 13px;
+  color: var(--text-soft);
+  border-radius: 4px;
+}
+.view-toggle button:hover {
+  background: var(--bg-hover);
+}
+.view-toggle button.active {
+  background: var(--bg);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+button.primary {
+  background: var(--accent);
+  color: #fff;
+  border-color: var(--accent);
+  padding: 6px 14px;
+  font-weight: 500;
+}
+button.primary:hover {
+  background: #1f1f1d;
+  border-color: #1f1f1d;
+}
+button.primary:active {
+  background: #111;
+}
+
+/* ===================================================================
+ * Sidebar
+ * =================================================================== */
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-soft);
+  padding: 18px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sidebar section h3 {
+  margin: 0 0 6px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.status-filter {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.status-filter button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 13.5px;
+  color: var(--text);
+  border-radius: var(--radius);
+}
+.status-filter button:hover {
+  background: var(--bg-hover);
+}
+.status-filter button.active {
+  background: var(--accent-soft);
+  font-weight: 500;
+}
+.status-filter .count {
+  font-size: 12px;
+  color: var(--text-muted);
+  background: transparent;
+  min-width: 20px;
+  text-align: right;
+}
+.status-filter button.active .count {
+  color: var(--text-soft);
+}
+
+.sidebar select {
+  width: 100%;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  font-size: 13.5px;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: var(--radius);
+}
+.checkbox:hover {
+  background: var(--bg-hover);
+}
+.checkbox input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ===================================================================
+ * Task list
+ * =================================================================== */
+
+.task-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg);
+  overflow: hidden;
+  max-width: 920px;
+}
+
+.task-item {
+  display: grid;
+  grid-template-columns: 28px 1fr auto auto auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s ease;
+}
+.task-item:last-child {
+  border-bottom: none;
+}
+.task-item:hover {
+  background: var(--bg-soft);
+}
+.task-item.done .task-title {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.task-item.done .task-note {
+  color: var(--text-muted);
+}
+
+.status-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  padding: 0;
+  font-size: 16px;
+  color: var(--text-soft);
+  border-radius: 50%;
+}
+.status-icon:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.task-main {
+  min-width: 0;
+}
+.task-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.task-note {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg-soft);
+  color: var(--text-soft);
+  border: 1px solid var(--border);
+  white-space: nowrap;
+}
+.badge.status-not_started {
+  color: var(--st-not_started);
+}
+.badge.status-in_progress {
+  color: var(--st-in_progress);
+  background: #eef3fc;
+  border-color: #d9e4f8;
+}
+.badge.status-done {
+  color: var(--st-done);
+  background: var(--success-soft);
+  border-color: #c8e3cf;
+}
+.badge.status-other {
+  color: var(--st-other);
+  background: #f1ecf9;
+  border-color: #e1d6f3;
+}
+
+.priority {
+  font-size: 12px;
+  color: var(--text-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+.priority::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--pri-0);
+}
+.priority.p-1::before {
+  background: var(--pri-1);
+}
+.priority.p-2::before {
+  background: var(--pri-2);
+}
+
+.due {
+  font-size: 12px;
+  color: var(--text-soft);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.due.overdue {
+  color: var(--danger);
+  font-weight: 500;
+}
+
+.task-actions {
+  display: inline-flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.task-item:hover .task-actions,
+.task-item:focus-within .task-actions {
+  opacity: 1;
+}
+.task-actions button {
+  padding: 4px 8px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+}
+.task-actions button:hover {
+  color: var(--text);
+}
+.task-actions button.danger:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+/* ===================================================================
+ * Empty / placeholder states
+ * =================================================================== */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 24px;
+  text-align: center;
+  color: var(--text-soft);
+}
+.empty-icon {
+  font-size: 42px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+.empty-state h2 {
+  margin: 0 0 6px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+}
+.empty-state p {
+  margin: 0 0 18px;
+  font-size: 13.5px;
+}
+
+.empty-filter {
+  padding: 32px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 13.5px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-soft);
+  max-width: 920px;
+}
+
+.phase2 {
+  padding: 48px 32px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--bg-soft);
+  max-width: 920px;
+  color: var(--text-soft);
+}
+.phase2 h2 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 16px;
+}
+
+/* ===================================================================
+ * Modal
+ * =================================================================== */
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 15, 15, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 24px;
+  animation: fadeIn 0.12s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+  animation: pop 0.14s ease;
+}
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal.small {
+  max-width: 380px;
+}
+
+.modal h2 {
+  margin: 0 0 16px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.modal form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.modal label input,
+.modal label select,
+.modal label textarea {
+  font-size: 14px;
+  color: var(--text);
+  font-weight: 400;
+}
+
+.form-error {
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 12.5px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  border: 1px solid #f4cbc7;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.modal-actions button {
+  padding: 6px 14px;
+}
+.modal-actions button.danger {
+  background: var(--danger);
+  color: #fff;
+  border-color: var(--danger);
+}
+.modal-actions button.danger:hover {
+  background: #951f18;
+  border-color: #951f18;
+}
+
+.modal p {
+  color: var(--text-soft);
+  margin: 0 0 4px;
+  font-size: 13.5px;
+}
+
+/* ===================================================================
+ * Responsive
+ * =================================================================== */
+
+@media (max-width: 720px) {
+  .sidebar {
+    display: none;
+  }
+  .content {
+    padding: 16px;
+  }
+  .app-header {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .task-item {
+    grid-template-columns: 28px 1fr auto;
+    grid-template-rows: auto auto;
+    row-gap: 4px;
+  }
+  .task-main {
+    grid-column: 2 / -1;
+  }
+  .badge,
+  .priority,
+  .due {
+    grid-row: 2;
+  }
+  .task-actions {
+    opacity: 1;
+    grid-column: 2 / -1;
+    grid-row: 3;
+  }
+}
