@@ -142,6 +142,7 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
                   ...form,
                   priority: Number(e.target.value) as Priority,
                 })
+                
               }
             >
               {[2, 1, 0].map((p) => (
