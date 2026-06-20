@@ -48,7 +48,11 @@ export function TaskItem({ task, onEdit, onDelete, onToggleDone }: Props) {
       >
         {STATUS_ICON[task.status]}
       </button>
-      <div className="task-main">
+      <div
+        className="task-main"
+        onDoubleClick={() => onEdit(task)}
+        title="ダブルクリックで編集"
+      >
         <div className="task-title">{task.title}</div>
         {task.note ? <div className="task-note">{task.note}</div> : null}
       </div>

@@ -353,6 +353,8 @@ button.primary:active {
 
 .task-main {
   min-width: 0;
+  cursor: pointer;
+  user-select: none;
 }
 .task-title {
   font-size: 14px;
