@@ -29,13 +29,17 @@ export function Header({
         <button
           className={view === "list" ? "active" : ""}
           onClick={() => onViewChange("list")}
+          aria-pressed={view === "list"}
         >
+          <span className="view-toggle-icon" aria-hidden="true">☰</span>
           一覧
         </button>
         <button
           className={view === "kanban" ? "active" : ""}
           onClick={() => onViewChange("kanban")}
+          aria-pressed={view === "kanban"}
         >
+          <span className="view-toggle-icon" aria-hidden="true">▦</span>
           カンバン
         </button>
       </div>
