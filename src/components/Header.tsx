@@ -35,7 +35,6 @@ export function Header({
         <button
           className={view === "kanban" ? "active" : ""}
           onClick={() => onViewChange("kanban")}
-          title="Phase 2"
         >
           カンバン
         </button>

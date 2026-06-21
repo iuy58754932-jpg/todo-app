@@ -6,8 +6,9 @@ import { TaskItem } from "./components/TaskItem";
 import { TaskModal, type TaskInput } from "./components/TaskModal";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { EmptyState } from "./components/EmptyState";
+import { KanbanBoard } from "./components/KanbanBoard";
 import { loadTasks, nextId, saveTasks } from "./storage";
-import type { Filters, Task } from "./types";
+import type { Filters, StatusCode, Task } from "./types";
 
 const DEFAULT_FILTERS: Filters = {
   status: "all",
@@ -123,6 +124,22 @@ function App() {
     );
   };
 
+  const handleStatusChange = (t: Task, next: StatusCode) => {
+    setTasks((prev) =>
+      prev.map((x) =>
+        x.id === t.id
+          ? {
+              ...x,
+              status: next,
+              custom_status:
+                next === "other" ? x.custom_status ?? "" : null,
+              updated_at: nowIso(),
+            }
+          : x,
+      ),
+    );
+  };
+
   return (
     <div className="app">
       <Header
@@ -138,10 +155,17 @@ function App() {
 
         <main className="content">
           {view === "kanban" ? (
-            <div className="phase2">
-              <h2>カンバンビュー</h2>
-              <p>Phase 2 で実装予定です。</p>
-            </div>
+            tasks.length === 0 ? (
+              <EmptyState onNewTask={openNew} />
+            ) : (
+              <KanbanBoard
+                tasks={visible}
+                onEdit={openEdit}
+                onDelete={setDeleting}
+                onStatusChange={handleStatusChange}
+                onNewTask={openNew}
+              />
+            )
           ) : tasks.length === 0 ? (
             <EmptyState onNewTask={openNew} />
           ) : visible.length === 0 ? (

@@ -516,6 +516,200 @@ button.primary:active {
 }
 
 /* ===================================================================
+ * Kanban board
+ * =================================================================== */
+
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(240px, 1fr));
+  gap: 14px;
+  align-items: start;
+  min-height: 100%;
+}
+
+.kanban-col {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 10px 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 200px;
+  transition: background 0.12s ease, border-color 0.12s ease;
+}
+.kanban-col.drag-over {
+  background: var(--accent-soft);
+  border-color: var(--border-strong);
+}
+
+.kanban-col-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.kanban-col-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.kanban-col-title::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-muted);
+}
+.kanban-col-title.status-not_started::before {
+  background: var(--st-not_started);
+}
+.kanban-col-title.status-in_progress::before {
+  background: var(--st-in_progress);
+}
+.kanban-col-title.status-done::before {
+  background: var(--st-done);
+}
+.kanban-col-title.status-other::before {
+  background: var(--st-other);
+}
+
+.kanban-col-count {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 0 8px;
+  min-width: 22px;
+  text-align: center;
+}
+
+.kanban-col-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-height: 40px;
+}
+
+.kanban-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 14px 8px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.kanban-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+  transition: box-shadow 0.12s ease, transform 0.12s ease,
+    border-color 0.12s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+}
+.kanban-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-strong);
+}
+.kanban-card:active {
+  cursor: grabbing;
+}
+.kanban-card.dragging {
+  opacity: 0.5;
+  transform: rotate(1deg);
+}
+.kanban-card.done .kanban-card-title {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+
+.kanban-card-title {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text);
+  word-break: break-word;
+}
+.kanban-card-note {
+  font-size: 12px;
+  color: var(--text-soft);
+  word-break: break-word;
+  white-space: pre-wrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.kanban-card-custom {
+  font-size: 11px;
+  color: var(--st-other);
+  background: #f1ecf9;
+  border: 1px solid #e1d6f3;
+  border-radius: 999px;
+  padding: 1px 8px;
+  align-self: flex-start;
+}
+
+.kanban-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 11.5px;
+}
+
+.kanban-card-actions {
+  display: flex;
+  gap: 4px;
+  justify-content: flex-end;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+.kanban-card:hover .kanban-card-actions,
+.kanban-card:focus-within .kanban-card-actions {
+  opacity: 1;
+}
+.kanban-card-actions button {
+  padding: 2px 8px;
+  font-size: 12px;
+  color: var(--text-soft);
+}
+.kanban-card-actions button:hover {
+  color: var(--text);
+}
+.kanban-card-actions button.danger:hover {
+  color: var(--danger);
+  background: var(--danger-soft);
+}
+
+.kanban-add {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-align: left;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+}
+.kanban-add:hover {
+  background: var(--bg-hover);
+  color: var(--text-soft);
+}
+
+/* ===================================================================
  * Modal
  * =================================================================== */
 
@@ -658,5 +852,17 @@ button.primary:active {
     opacity: 1;
     grid-column: 2 / -1;
     grid-row: 3;
+  }
+  .kanban {
+    grid-template-columns: 1fr;
+  }
+  .kanban-card-actions {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 721px) and (max-width: 1100px) {
+  .kanban {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
