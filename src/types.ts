@@ -22,6 +22,12 @@ export const PRIORITY_LABELS: Record<Priority, string> = {
   2: "高",
 };
 
+export interface Subtask {
+  id: number;
+  title: string;
+  done: boolean;
+}
+
 export interface Task {
   id: number;
   title: string;
@@ -30,6 +36,8 @@ export interface Task {
   note: string | null;
   due_date: string | null;
   priority: Priority;
+  subtasks: Subtask[];
+  tags: string[];
   created_at: string;
   updated_at: string;
 }
@@ -41,4 +49,5 @@ export interface Filters {
   keyword: string;
   hideCompleted: boolean;
   sort: SortKey;
+  tags: string[];
 }

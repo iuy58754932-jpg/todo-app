@@ -105,6 +105,8 @@ export function KanbanBoard({
               ) : (
                 list.map((t) => {
                   const overdue = isOverdue(t.due_date, t.status);
+                  const subTotal = t.subtasks.length;
+                  const subDone = t.subtasks.filter((s) => s.done).length;
                   return (
                     <article
                       key={t.id}
@@ -135,7 +137,25 @@ export function KanbanBoard({
                             {t.due_date}
                           </span>
                         ) : null}
+                        {subTotal > 0 ? (
+                          <span
+                            className={`subtask-progress ${
+                              subDone === subTotal ? "complete" : ""
+                            }`}
+                          >
+                            ☑ {subDone}/{subTotal}
+                          </span>
+                        ) : null}
                       </div>
+                      {t.tags.length > 0 && (
+                        <div className="kanban-card-tags">
+                          {t.tags.map((tag) => (
+                            <span key={tag} className="tag-chip readonly">
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
                       <div className="kanban-card-actions">
                         <button onClick={() => onEdit(t)}>編集</button>
                         <button className="danger" onClick={() => onDelete(t)}>

@@ -1,13 +1,33 @@
-import type { Task } from "./types";
+import type { Subtask, Task } from "./types";
 
 const KEY = "todo-app.tasks.v1";
 const SEQ_KEY = "todo-app.seq.v1";
+
+function migrate(raw: unknown): Task[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((t) => {
+    const subtasks: Subtask[] = Array.isArray(t.subtasks)
+      ? t.subtasks.filter(
+          (s: unknown): s is Subtask =>
+            !!s &&
+            typeof s === "object" &&
+            typeof (s as Subtask).id === "number" &&
+            typeof (s as Subtask).title === "string" &&
+            typeof (s as Subtask).done === "boolean",
+        )
+      : [];
+    const tags: string[] = Array.isArray(t.tags)
+      ? t.tags.filter((v: unknown): v is string => typeof v === "string")
+      : [];
+    return { ...t, subtasks, tags } as Task;
+  });
+}
 
 export function loadTasks(): Task[] {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
-    return JSON.parse(raw) as Task[];
+    return migrate(JSON.parse(raw));
   } catch {
     return [];
   }

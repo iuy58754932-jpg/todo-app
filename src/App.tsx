@@ -15,6 +15,7 @@ const DEFAULT_FILTERS: Filters = {
   keyword: "",
   hideCompleted: false,
   sort: "created",
+  tags: [],
 };
 
 function nowIso(): string {
@@ -55,11 +56,18 @@ function App() {
     let arr = tasks.filter((t) => {
       if (filters.status !== "all" && t.status !== filters.status) return false;
       if (filters.hideCompleted && t.status === "done") return false;
+      if (filters.tags.length > 0) {
+        for (const tag of filters.tags) {
+          if (!t.tags.includes(tag)) return false;
+        }
+      }
       if (kw) {
         const hay = [
           t.title,
           t.note ?? "",
           t.custom_status ?? "",
+          ...t.tags,
+          ...t.subtasks.map((s) => s.title),
         ]
           .join(" ")
           .toLowerCase();
@@ -109,14 +117,14 @@ function App() {
   };
 
   const handleToggleDone = (t: Task) => {
-    const next: Task["status"] = t.status === "done" ? "not_started" : "done";
+    const next: StatusCode = t.status === "done" ? "not_started" : "done";
     setTasks((prev) =>
       prev.map((x) =>
         x.id === t.id
           ? {
               ...x,
               status: next,
-              custom_status: next === "other" ? x.custom_status : null,
+              custom_status: null,
               updated_at: nowIso(),
             }
           : x,

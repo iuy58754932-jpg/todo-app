@@ -37,6 +37,8 @@ function statusBadge(task: Task) {
 export function TaskItem({ task, onEdit, onDelete, onToggleDone }: Props) {
   const done = task.status === "done";
   const overdue = isOverdue(task.due_date, task.status);
+  const subTotal = task.subtasks.length;
+  const subDone = task.subtasks.filter((s) => s.done).length;
 
   return (
     <li className={`task-item ${done ? "done" : ""}`}>
@@ -55,6 +57,25 @@ export function TaskItem({ task, onEdit, onDelete, onToggleDone }: Props) {
       >
         <div className="task-title">{task.title}</div>
         {task.note ? <div className="task-note">{task.note}</div> : null}
+        {(subTotal > 0 || task.tags.length > 0) && (
+          <div className="task-extras">
+            {subTotal > 0 && (
+              <span
+                className={`subtask-progress ${
+                  subDone === subTotal ? "complete" : ""
+                }`}
+                title="サブタスク進捗"
+              >
+                ☑ {subDone}/{subTotal}
+              </span>
+            )}
+            {task.tags.map((t) => (
+              <span key={t} className="tag-chip readonly">
+                {t}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
       <span className={`badge status-${task.status}`}>{statusBadge(task)}</span>
       <span

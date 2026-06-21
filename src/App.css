@@ -821,6 +821,249 @@ button.primary:active {
 }
 
 /* ===================================================================
+ * Tags & Subtasks
+ * =================================================================== */
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--text-soft);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 8px;
+  white-space: nowrap;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tag-chip::before {
+  content: "#";
+  color: var(--text-muted);
+}
+.tag-chip button {
+  border: none;
+  padding: 0;
+  margin-left: 2px;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+.tag-chip button:hover {
+  color: var(--danger);
+  background: transparent;
+}
+.tag-chip.readonly {
+  background: var(--bg);
+}
+
+.tag-input {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 4px 6px;
+  background: var(--bg);
+  min-height: 32px;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+.tag-input:focus-within {
+  border-color: #8a8a85;
+  box-shadow: 0 0 0 3px rgba(55, 53, 47, 0.08);
+}
+.tag-input input {
+  flex: 1;
+  min-width: 80px;
+  border: none;
+  padding: 2px 4px;
+  background: transparent;
+  font-size: 13px;
+}
+.tag-input input:focus {
+  border: none;
+  box-shadow: none;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+.field-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.field-label {
+  font-size: 12.5px;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+.field-hint {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+.subtask-edit {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.subtask-edit li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.subtask-edit input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.subtask-edit input[type="text"] {
+  flex: 1;
+  padding: 4px 8px;
+  font-size: 13px;
+}
+.subtask-edit input.subtask-done {
+  color: var(--text-muted);
+  text-decoration: line-through;
+}
+.subtask-remove {
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  padding: 2px 6px;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.subtask-remove:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.subtask-add {
+  display: flex;
+  gap: 6px;
+}
+.subtask-add input {
+  flex: 1;
+  font-size: 13px;
+  padding: 4px 8px;
+}
+.subtask-add button {
+  border: 1px solid var(--border-strong);
+  padding: 4px 12px;
+  font-size: 12.5px;
+}
+
+.subtask-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--text-soft);
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.subtask-progress.complete {
+  color: var(--success);
+  background: var(--success-soft);
+  border-color: #c8e3cf;
+}
+
+.task-extras {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.kanban-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.sidebar-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0 6px;
+}
+.sidebar-section-head h3 {
+  margin: 0;
+  padding: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.sidebar-clear {
+  font-size: 11px;
+  color: var(--text-muted);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+.sidebar-clear:hover {
+  color: var(--text-soft);
+  background: var(--bg-hover);
+}
+
+.tag-filter {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.tag-filter button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  font-size: 13.5px;
+  color: var(--text);
+  border-radius: var(--radius);
+}
+.tag-filter button:hover {
+  background: var(--bg-hover);
+}
+.tag-filter button.active {
+  background: var(--accent-soft);
+  font-weight: 500;
+}
+.tag-filter .count {
+  font-size: 12px;
+  color: var(--text-muted);
+  min-width: 20px;
+  text-align: right;
+}
+
+/* ===================================================================
  * Responsive
  * =================================================================== */
 

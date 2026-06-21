@@ -5,6 +5,7 @@ import {
   STATUS_ORDER,
   type Priority,
   type StatusCode,
+  type Subtask,
   type Task,
 } from "../types";
 
@@ -15,6 +16,8 @@ export interface TaskInput {
   note: string | null;
   due_date: string | null;
   priority: Priority;
+  subtasks: Subtask[];
+  tags: string[];
 }
 
 interface Props {
@@ -31,11 +34,23 @@ const EMPTY: TaskInput = {
   note: null,
   due_date: null,
   priority: 1,
+  subtasks: [],
+  tags: [],
 };
+
+function nextSubtaskId(subs: Subtask[]): number {
+  return subs.reduce((max, s) => (s.id > max ? s.id : max), 0) + 1;
+}
+
+function normalizeTag(t: string): string {
+  return t.trim().replace(/\s+/g, " ");
+}
 
 export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
   const [form, setForm] = useState<TaskInput>(EMPTY);
   const [error, setError] = useState<string | null>(null);
+  const [tagDraft, setTagDraft] = useState("");
+  const [subDraft, setSubDraft] = useState("");
 
   useEffect(() => {
     if (!open) return;
@@ -47,14 +62,76 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
         note: initial.note,
         due_date: initial.due_date,
         priority: initial.priority,
+        subtasks: initial.subtasks.map((s) => ({ ...s })),
+        tags: [...initial.tags],
       });
     } else {
       setForm(EMPTY);
     }
     setError(null);
+    setTagDraft("");
+    setSubDraft("");
   }, [open, initial]);
 
   if (!open) return null;
+
+  const commitTag = () => {
+    const v = normalizeTag(tagDraft);
+    if (!v) {
+      setTagDraft("");
+      return;
+    }
+    if (form.tags.includes(v)) {
+      setTagDraft("");
+      return;
+    }
+    setForm({ ...form, tags: [...form.tags, v] });
+    setTagDraft("");
+  };
+
+  const removeTag = (tag: string) => {
+    setForm({ ...form, tags: form.tags.filter((t) => t !== tag) });
+  };
+
+  const handleTagKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      commitTag();
+    } else if (e.key === "Backspace" && !tagDraft && form.tags.length > 0) {
+      e.preventDefault();
+      setForm({ ...form, tags: form.tags.slice(0, -1) });
+    }
+  };
+
+  const addSubtask = () => {
+    const v = subDraft.trim();
+    if (!v) return;
+    const sub: Subtask = {
+      id: nextSubtaskId(form.subtasks),
+      title: v,
+      done: false,
+    };
+    setForm({ ...form, subtasks: [...form.subtasks, sub] });
+    setSubDraft("");
+  };
+
+  const handleSubKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addSubtask();
+    }
+  };
+
+  const updateSubtask = (id: number, patch: Partial<Subtask>) => {
+    setForm({
+      ...form,
+      subtasks: form.subtasks.map((s) => (s.id === id ? { ...s, ...patch } : s)),
+    });
+  };
+
+  const removeSubtask = (id: number) => {
+    setForm({ ...form, subtasks: form.subtasks.filter((s) => s.id !== id) });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,6 +144,14 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
       setError("「その他」を選んだ場合は内容を入力してください");
       return;
     }
+    const pendingTag = normalizeTag(tagDraft);
+    const tags =
+      pendingTag && !form.tags.includes(pendingTag)
+        ? [...form.tags, pendingTag]
+        : form.tags;
+    const subtasks = form.subtasks
+      .map((s) => ({ ...s, title: s.title.trim() }))
+      .filter((s) => s.title);
     onSubmit({
       ...form,
       title,
@@ -74,8 +159,12 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
         form.status === "other" ? (form.custom_status ?? "").trim() : null,
       note: form.note?.trim() ? form.note.trim() : null,
       due_date: form.due_date || null,
+      subtasks,
+      tags,
     });
   };
+
+  const doneCount = form.subtasks.filter((s) => s.done).length;
 
   return (
     <div className="modal-backdrop" onClick={onCancel}>
@@ -142,7 +231,6 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
                   ...form,
                   priority: Number(e.target.value) as Priority,
                 })
-                
               }
             >
               {[2, 1, 0].map((p) => (
@@ -152,6 +240,87 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
               ))}
             </select>
           </label>
+
+          <div className="field">
+            <div className="field-label-row">
+              <span className="field-label">サブタスク</span>
+              {form.subtasks.length > 0 && (
+                <span className="field-hint">
+                  {doneCount}/{form.subtasks.length} 完了
+                </span>
+              )}
+            </div>
+            {form.subtasks.length > 0 && (
+              <ul className="subtask-edit">
+                {form.subtasks.map((s) => (
+                  <li key={s.id}>
+                    <input
+                      type="checkbox"
+                      checked={s.done}
+                      onChange={(e) =>
+                        updateSubtask(s.id, { done: e.target.checked })
+                      }
+                    />
+                    <input
+                      type="text"
+                      value={s.title}
+                      onChange={(e) =>
+                        updateSubtask(s.id, { title: e.target.value })
+                      }
+                      className={s.done ? "subtask-done" : ""}
+                    />
+                    <button
+                      type="button"
+                      className="subtask-remove"
+                      onClick={() => removeSubtask(s.id)}
+                      aria-label="削除"
+                      title="削除"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className="subtask-add">
+              <input
+                type="text"
+                value={subDraft}
+                onChange={(e) => setSubDraft(e.target.value)}
+                onKeyDown={handleSubKey}
+                placeholder="サブタスクを追加 (Enter)"
+              />
+              <button type="button" onClick={addSubtask}>
+                追加
+              </button>
+            </div>
+          </div>
+
+          <div className="field">
+            <span className="field-label">タグ</span>
+            <div className="tag-input">
+              {form.tags.map((t) => (
+                <span key={t} className="tag-chip">
+                  {t}
+                  <button
+                    type="button"
+                    onClick={() => removeTag(t)}
+                    aria-label={`${t}を削除`}
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              <input
+                type="text"
+                value={tagDraft}
+                onChange={(e) => setTagDraft(e.target.value)}
+                onKeyDown={handleTagKey}
+                onBlur={commitTag}
+                placeholder={form.tags.length === 0 ? "Enterで追加" : ""}
+              />
+            </div>
+          </div>
 
           {error && <div className="form-error">{error}</div>}
 
