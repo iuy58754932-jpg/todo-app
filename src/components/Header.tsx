@@ -25,24 +25,31 @@ export function Header({
         value={keyword}
         onChange={(e) => onKeywordChange(e.target.value)}
       />
-      <div className="view-toggle" role="group" aria-label="ビュー切替">
-        <button
-          className={view === "list" ? "active" : ""}
-          onClick={() => onViewChange("list")}
-          aria-pressed={view === "list"}
-        >
-          <span className="view-toggle-icon" aria-hidden="true">☰</span>
-          一覧
-        </button>
-        <button
-          className={view === "kanban" ? "active" : ""}
-          onClick={() => onViewChange("kanban")}
-          aria-pressed={view === "kanban"}
-        >
-          <span className="view-toggle-icon" aria-hidden="true">▦</span>
-          カンバン
-        </button>
-      </div>
+      <button
+        type="button"
+        className={`view-switch ${view === "kanban" ? "is-kanban" : "is-list"}`}
+        role="switch"
+        aria-checked={view === "kanban"}
+        aria-label="ビュー切替"
+        onClick={() => onViewChange(view === "list" ? "kanban" : "list")}
+      >
+        <span className="view-switch-track">
+          <span className="view-switch-option" aria-hidden="true">
+            <span className="view-switch-icon">☰</span>
+            一覧
+          </span>
+          <span className="view-switch-option" aria-hidden="true">
+            <span className="view-switch-icon">▦</span>
+            カンバン
+          </span>
+          <span className="view-switch-thumb" aria-hidden="true">
+            <span className="view-switch-icon">
+              {view === "kanban" ? "▦" : "☰"}
+            </span>
+            {view === "kanban" ? "カンバン" : "一覧"}
+          </span>
+        </span>
+      </button>
       <button className="primary" onClick={onNewTask}>
         + 新規タスク
       </button>

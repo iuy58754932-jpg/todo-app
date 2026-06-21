@@ -172,43 +172,70 @@ textarea {
   border-color: var(--border-strong);
 }
 
-.view-toggle {
+.view-switch {
+  position: relative;
   display: inline-flex;
+  align-items: center;
+  padding: 0;
   background: var(--bg-soft);
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 3px;
-  gap: 2px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
 }
-.view-toggle button {
-  border: none;
+.view-switch:hover {
+  background: var(--bg-hover);
+}
+.view-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.view-switch-track {
+  position: relative;
+  display: inline-flex;
+  padding: 3px;
+  gap: 0;
+}
+.view-switch-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   padding: 7px 16px;
+  min-width: 88px;
   font-size: 13.5px;
   font-weight: 500;
   color: var(--text-soft);
-  border-radius: 4px;
+  border-radius: 999px;
+  user-select: none;
+}
+.view-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: calc(50% - 3px);
+  height: calc(100% - 6px);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  min-width: 80px;
   justify-content: center;
-  transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
-}
-.view-toggle button:hover {
-  background: var(--bg-hover);
+  gap: 6px;
+  font-size: 13.5px;
+  font-weight: 600;
   color: var(--text);
-}
-.view-toggle button.active {
   background: var(--bg);
-  color: var(--text);
+  border-radius: 999px;
   box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease;
 }
-.view-toggle-icon {
+.view-switch.is-kanban .view-switch-thumb {
+  transform: translateX(100%);
+}
+.view-switch-icon {
   font-size: 14px;
   line-height: 1;
   color: var(--text-muted);
 }
-.view-toggle button.active .view-toggle-icon {
+.view-switch-thumb .view-switch-icon {
   color: var(--text);
 }
 
