@@ -1,4 +1,10 @@
-type View = "list" | "kanban";
+type View = "list" | "kanban" | "calendar";
+
+const VIEW_OPTIONS: { value: View; label: string; icon: string }[] = [
+  { value: "list", label: "一覧", icon: "☰" },
+  { value: "kanban", label: "カンバン", icon: "▦" },
+  { value: "calendar", label: "カレンダー", icon: "▤" },
+];
 
 interface Props {
   keyword: string;
@@ -15,6 +21,7 @@ export function Header({
   onViewChange,
   onNewTask,
 }: Props) {
+  const activeIndex = VIEW_OPTIONS.findIndex((o) => o.value === view);
   return (
     <header className="app-header">
       <div className="app-title">Todo</div>
@@ -25,31 +32,29 @@ export function Header({
         value={keyword}
         onChange={(e) => onKeywordChange(e.target.value)}
       />
-      <button
-        type="button"
-        className={`view-switch ${view === "kanban" ? "is-kanban" : "is-list"}`}
-        role="switch"
-        aria-checked={view === "kanban"}
+      <div
+        className="view-switch"
+        role="tablist"
         aria-label="ビュー切替"
-        onClick={() => onViewChange(view === "list" ? "kanban" : "list")}
+        style={{ ["--active-index" as string]: activeIndex }}
       >
-        <span className="view-switch-track">
-          <span className="view-switch-option" aria-hidden="true">
-            <span className="view-switch-icon">☰</span>
-            一覧
-          </span>
-          <span className="view-switch-option" aria-hidden="true">
-            <span className="view-switch-icon">▦</span>
-            カンバン
-          </span>
-          <span className="view-switch-thumb" aria-hidden="true">
-            <span className="view-switch-icon">
-              {view === "kanban" ? "▦" : "☰"}
-            </span>
-            {view === "kanban" ? "カンバン" : "一覧"}
-          </span>
-        </span>
-      </button>
+        <span className="view-switch-thumb" aria-hidden="true" />
+        {VIEW_OPTIONS.map((opt) => (
+          <button
+            key={opt.value}
+            type="button"
+            role="tab"
+            aria-selected={view === opt.value}
+            className={`view-switch-option ${
+              view === opt.value ? "active" : ""
+            }`}
+            onClick={() => onViewChange(opt.value)}
+          >
+            <span className="view-switch-icon">{opt.icon}</span>
+            {opt.label}
+          </button>
+        ))}
+      </div>
       <button className="primary" onClick={onNewTask}>
         + 新規タスク
       </button>

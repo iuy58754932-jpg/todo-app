@@ -7,6 +7,7 @@ import { TaskModal, type TaskInput } from "./components/TaskModal";
 import { ConfirmDialog } from "./components/ConfirmDialog";
 import { EmptyState } from "./components/EmptyState";
 import { KanbanBoard } from "./components/KanbanBoard";
+import { CalendarView } from "./components/CalendarView";
 import { loadTasks, nextId, saveTasks } from "./storage";
 import type { Filters, StatusCode, Task } from "./types";
 
@@ -173,6 +174,12 @@ function App() {
                 onStatusChange={handleStatusChange}
                 onNewTask={openNew}
               />
+            )
+          ) : view === "calendar" ? (
+            tasks.length === 0 ? (
+              <EmptyState onNewTask={openNew} />
+            ) : (
+              <CalendarView tasks={visible} onSelectTask={openEdit} />
             )
           ) : tasks.length === 0 ? (
             <EmptyState onNewTask={openNew} />
