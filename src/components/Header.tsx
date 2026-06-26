@@ -12,6 +12,8 @@ interface Props {
   view: View;
   onViewChange: (v: View) => void;
   onNewTask: () => void;
+  notificationsEnabled: boolean;
+  onToggleNotifications: () => void;
 }
 
 export function Header({
@@ -20,6 +22,8 @@ export function Header({
   view,
   onViewChange,
   onNewTask,
+  notificationsEnabled,
+  onToggleNotifications,
 }: Props) {
   const activeIndex = VIEW_OPTIONS.findIndex((o) => o.value === view);
   return (
@@ -55,6 +59,17 @@ export function Header({
           </button>
         ))}
       </div>
+      <button
+        type="button"
+        className={`notif-toggle ${notificationsEnabled ? "on" : ""}`}
+        onClick={onToggleNotifications}
+        aria-pressed={notificationsEnabled}
+        title={
+          notificationsEnabled ? "通知をオフにする" : "通知をオンにする"
+        }
+      >
+        {notificationsEnabled ? "🔔" : "🔕"}
+      </button>
       <button className="primary" onClick={onNewTask}>
         + 新規タスク
       </button>

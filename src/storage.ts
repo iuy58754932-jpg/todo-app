@@ -19,7 +19,9 @@ function migrate(raw: unknown): Task[] {
     const tags: string[] = Array.isArray(t.tags)
       ? t.tags.filter((v: unknown): v is string => typeof v === "string")
       : [];
-    return { ...t, subtasks, tags } as Task;
+    const reminder_at: string | null =
+      typeof t.reminder_at === "string" ? t.reminder_at : null;
+    return { ...t, subtasks, tags, reminder_at } as Task;
   });
 }
 

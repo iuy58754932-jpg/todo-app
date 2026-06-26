@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import { Header, type View } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
@@ -18,6 +18,8 @@ const DEFAULT_FILTERS: Filters = {
   sort: "created",
   tags: [],
 };
+
+const NOTIF_KEY = "todo-app.notifications.v1";
 
 function nowIso(): string {
   return new Date().toISOString();
@@ -47,10 +49,70 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Task | null>(null);
   const [deleting, setDeleting] = useState<Task | null>(null);
+  const [notificationsEnabled, setNotificationsEnabled] = useState<boolean>(
+    () => localStorage.getItem(NOTIF_KEY) === "1",
+  );
+  const notifiedRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     saveTasks(tasks);
   }, [tasks]);
+
+  useEffect(() => {
+    localStorage.setItem(NOTIF_KEY, notificationsEnabled ? "1" : "0");
+  }, [notificationsEnabled]);
+
+  useEffect(() => {
+    if (!notificationsEnabled) return;
+    if (typeof Notification === "undefined") return;
+
+    const check = () => {
+      const now = Date.now();
+      for (const t of tasks) {
+        if (!t.reminder_at) continue;
+        if (t.status === "done") continue;
+        if (notifiedRef.current.has(t.id)) continue;
+        const at = new Date(t.reminder_at).getTime();
+        if (Number.isNaN(at)) continue;
+        if (at > now) continue;
+        if (now - at > 24 * 60 * 60 * 1000) continue;
+        notifiedRef.current.add(t.id);
+        try {
+          new Notification("リマインダー", {
+            body: t.title,
+            tag: `todo-${t.id}`,
+          });
+        } catch {
+          // ignore
+        }
+      }
+    };
+
+    check();
+    const id = window.setInterval(check, 30 * 1000);
+    return () => window.clearInterval(id);
+  }, [notificationsEnabled, tasks]);
+
+  const handleToggleNotifications = async () => {
+    if (notificationsEnabled) {
+      setNotificationsEnabled(false);
+      return;
+    }
+    if (typeof Notification === "undefined") {
+      alert("このブラウザは通知に対応していません。");
+      return;
+    }
+    let perm = Notification.permission;
+    if (perm === "default") {
+      perm = await Notification.requestPermission();
+    }
+    if (perm !== "granted") {
+      alert("通知が許可されませんでした。ブラウザ設定を確認してください。");
+      return;
+    }
+    notifiedRef.current.clear();
+    setNotificationsEnabled(true);
+  };
 
   const visible = useMemo(() => {
     const kw = filters.keyword.trim().toLowerCase();
@@ -157,6 +219,8 @@ function App() {
         view={view}
         onViewChange={setView}
         onNewTask={openNew}
+        notificationsEnabled={notificationsEnabled}
+        onToggleNotifications={handleToggleNotifications}
       />
 
       <div className="body">

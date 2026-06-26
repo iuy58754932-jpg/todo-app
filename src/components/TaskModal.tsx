@@ -15,6 +15,7 @@ export interface TaskInput {
   custom_status: string | null;
   note: string | null;
   due_date: string | null;
+  reminder_at: string | null;
   priority: Priority;
   subtasks: Subtask[];
   tags: string[];
@@ -33,10 +34,30 @@ const EMPTY: TaskInput = {
   custom_status: null,
   note: null,
   due_date: null,
+  reminder_at: null,
   priority: 1,
   subtasks: [],
   tags: [],
 };
+
+function toLocalInput(iso: string | null): string {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${y}-${m}-${day}T${hh}:${mm}`;
+}
+
+function fromLocalInput(v: string): string | null {
+  if (!v) return null;
+  const d = new Date(v);
+  if (Number.isNaN(d.getTime())) return null;
+  return d.toISOString();
+}
 
 function nextSubtaskId(subs: Subtask[]): number {
   return subs.reduce((max, s) => (s.id > max ? s.id : max), 0) + 1;
@@ -61,6 +82,7 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
         custom_status: initial.custom_status,
         note: initial.note,
         due_date: initial.due_date,
+        reminder_at: initial.reminder_at,
         priority: initial.priority,
         subtasks: initial.subtasks.map((s) => ({ ...s })),
         tags: [...initial.tags],
@@ -220,6 +242,16 @@ export function TaskModal({ open, initial, onCancel, onSubmit }: Props) {
               type="date"
               value={form.due_date ?? ""}
               onChange={(e) => setForm({ ...form, due_date: e.target.value })}
+            />
+          </label>
+          <label>
+            リマインダー
+            <input
+              type="datetime-local"
+              value={toLocalInput(form.reminder_at)}
+              onChange={(e) =>
+                setForm({ ...form, reminder_at: fromLocalInput(e.target.value) })
+              }
             />
           </label>
           <label>

@@ -35,6 +35,7 @@ export interface Task {
   custom_status: string | null;
   note: string | null;
   due_date: string | null;
+  reminder_at: string | null;
   priority: Priority;
   subtasks: Subtask[];
   tags: string[];
