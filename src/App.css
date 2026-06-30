@@ -787,6 +787,7 @@ button.primary:active {
   display: flex;
   align-items: center;
   gap: 16px;
+  justify-content: center;
 }
 .calendar-title {
   margin: 0;

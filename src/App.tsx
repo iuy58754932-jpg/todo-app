@@ -68,11 +68,31 @@ function App() {
 
     const check = () => {
       const now = Date.now();
+      console.log(
+        "[reminder] check",
+        new Date(now).toLocaleString(),
+        "perm:",
+        Notification.permission,
+        "tasks:",
+        tasks.length,
+      );
       for (const t of tasks) {
         if (!t.reminder_at) continue;
         if (t.status === "done") continue;
-        if (notifiedRef.current.has(t.id)) continue;
         const at = new Date(t.reminder_at).getTime();
+        const already = notifiedRef.current.has(t.id);
+        console.log(
+          "[reminder]",
+          t.id,
+          t.title,
+          "at:",
+          new Date(at).toLocaleString(),
+          "diffMs:",
+          now - at,
+          "already:",
+          already,
+        );
+        if (already) continue;
         if (Number.isNaN(at)) continue;
         if (at > now) continue;
         if (now - at > 24 * 60 * 60 * 1000) continue;
@@ -82,8 +102,9 @@ function App() {
             body: t.title,
             tag: `todo-${t.id}`,
           });
-        } catch {
-          // ignore
+          console.log("[reminder] fired", t.id);
+        } catch (err) {
+          console.error("[reminder] fire error", err);
         }
       }
     };
